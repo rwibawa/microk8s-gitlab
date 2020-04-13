@@ -1,8 +1,7 @@
 ## GitLab CE image
 ## ref: https://hub.docker.com/r/gitlab/gitlab-ce/tags/
 ##
-replicaCount: 1
-image: gitlab/gitlab-ce:9.4.1-ce.0
+image: localhost:32000/gitlab/gitlab-ce:12.8.7-ce.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -44,9 +43,9 @@ sshPort: 22
 httpPort: 80
 httpsPort: 443
 ## livenessPort Port of liveness probe endpoint
-livenessPort: http
+livenessPort: 80
 ## readinessPort Port of readiness probe endpoint
-readinessPort: http
+readinessPort: 80
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

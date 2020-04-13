@@ -1,0 +1,58 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: hela-gitlab
+  labels:
+    app: gitlab
+spec:
+  selector:
+    matchLabels:
+      app: gitlab
+      tier: backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gitlab
+        tier: backend
+    spec:
+      containers:
+      - image: gitlab/gitlab-ce:12.9.2-ce.0
+        name: gitlab
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        - containerPort: 22
+          name: ssh
+        volumeMounts:
+        - name: gitlab-persistent-storage
+          mountPath: /etc/gitlab
+        - name: gitlab-persistent-storage
+          mountPath: /var/log/gitlab
+        - name: gitlab-persistent-storage
+          mountPath: /var/opt/gitlab
+        args:
+        - /bin/sh
+        - -c
+        - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: gitlab-persistent-storage
+        persistentVolumeClaim:
+          claimName: gitlab-pv-claim

@@ -2,18 +2,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "gitlab-ce.fullname" . }}
+  name: {{ template "gitlab-ce.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "gitlab-ce.name" . }}
+    app.kubernetes.io/name: {{ template "gitlab-ce.fullname" . }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "gitlab-ce.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
